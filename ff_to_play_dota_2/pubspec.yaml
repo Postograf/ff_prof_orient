@@ -34,13 +34,21 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  modal_bottom_sheet: ^2.0.0
   sliding_up_panel: ^2.0.0+1
   flutter_neumorphic:
     git:
       url: https://github.com/tsvillain/Flutter-Neumorphic.git
+  flutter_dotenv: ^5.0.2
+  provider: ^6.0.1
+  http: ^0.13.3
+  shared_preferences: ^2.0.8
+  intl: ^0.17.0
+  flutter_stack_card: ^0.2.0+1
+  flutter_slider_indicator: ^0.1.1
+
 
 dev_dependencies:
+  flutter_native_splash: ^1.2.4
   flutter_test:
     sdk: flutter
 
@@ -63,10 +71,14 @@ flutter:
     - family: Begas
       fonts:
         - asset: assets/BebasNeue-Regular.ttf
+    - family: Manrope
+      fonts:
+        - asset: assets/Manrope-Regular.otf
   assets:
-    - assets/digital-digital-art-artwork-landscape-lines-hd-wallpaper-preview.jpg
-    - assets/1afcdb77-a170-43b2-8df1-5580cbb59302.png
+    - assets/Backrounds/
     - assets/WeatherItems/
+    - assets/WeatherIcons/
+    - .env
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

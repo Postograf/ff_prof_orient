@@ -1,110 +1,103 @@
-import 'package:flutter/material.dart';
+import 'package:ff_to_play_dota_2/models/cities_model.dart';
+import 'package:ff_to_play_dota_2/models/settings_model.dart';
+import 'package:ff_to_play_dota_2/pages/favorites_page.dart';
+import 'package:ff_to_play_dota_2/pages/info_page.dart';
+import 'package:ff_to_play_dota_2/pages/search_page.dart';
+import 'package:ff_to_play_dota_2/pages/settings_page.dart';
+import 'package:ff_to_play_dota_2/pages/weakly_forecast.dart';
+import 'package:ff_to_play_dota_2/prefs/Prefs.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'package:ff_to_play_dota_2/pages/home_page.dart';
+
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
+  await Prefs.init();
+
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CitiesModel>(create: (context) => CitiesModel()),
+        ChangeNotifierProvider<SettingsModel>(create: (context) => SettingsModel()),
+      ],
+      child: const WuetherApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class WuetherApp extends StatelessWidget {
+  const WuetherApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+  Widget build(BuildContext context) {
+    const lightPrimary = Color(0xffe2ebff);
+    const darkPrimary = Color(0xff0c1620);
+
+    return NeumorphicApp(
+      debugShowCheckedModeBanner: false,
+      theme: const NeumorphicThemeData(
+        baseColor: lightPrimary,
+        variantColor: Color(0xffe1e9ff),
+        accentColor: Color(0xff4b5f88),
+        appBarTheme: NeumorphicAppBarThemeData(
+          color: lightPrimary,
         ),
-        debugShowCheckedModeBanner: false,
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      );
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  double _temperature = -17;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        body: SlidingUpPanel(
-          minHeight: 230,
-          maxHeight: 350,
-          panel: Column(children: [
-            const Padding(padding: EdgeInsets.only(top: 5)),
-            Container(
-              height: 7,
-              width: 70,
-              decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-            ),
-            Row(
-              children: [
-                ListView.builder(itemBuilder: (itemBuilder))
-              ]
-            )
-          ]),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+        textTheme: TextTheme(
+          subtitle1: TextStyle(color: Colors.black),
+          subtitle2: TextStyle(color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
+      ),
+      darkTheme: const NeumorphicThemeData(
+        baseColor: darkPrimary,
+        variantColor: Color(0xff0d172b),
+        accentColor: Colors.white,
+        shadowLightColor: Color(0xFF828282),
+        defaultTextColor: Colors.white,
+        textTheme: TextTheme(
+          subtitle1: TextStyle(color: Colors.white),
+          subtitle2: TextStyle(color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+      ),
+      materialTheme: ThemeData(
+        scaffoldBackgroundColor: lightPrimary,
+        backgroundColor: lightPrimary,
+        cardColor: lightPrimary,
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.black,
+          backgroundColor: lightPrimary,
+        ),
+      ),
+      materialDarkTheme: ThemeData(
+        scaffoldBackgroundColor: darkPrimary,
+        primaryColor: Colors.white,
+        backgroundColor: darkPrimary,
+        cardColor: darkPrimary,
+        brightness: Brightness.dark,
+        cardTheme: const CardTheme(
+          shadowColor: Colors.white,
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(Colors.white),
           ),
-          body: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                      "assets/1afcdb77-a170-43b2-8df1-5580cbb59302.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Column(children: [
-                const Padding(padding: EdgeInsets.only(top: 30)),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.menu),
-                          iconSize: 40,
-                          color: Colors.white),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _temperature++;
-                          });
-                        },
-                        icon: const Icon(Icons.add_circle_outline),
-                        iconSize: 40,
-                        color: Colors.white,
-                      ),
-                    ]),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text("$_temperature°C",
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 100,
-                            fontFamily: 'Begas'
-                        )
-                    ),
-                  ],
-                ),
-              ])),
         ),
-      );
+      ),
+      title: 'Wuether',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomePage(),
+        '/info': (context) => const InfoPage(),
+        '/search': (context) => const SearchPage(),
+        '/favourite': (context) => const FavouritesPage(),
+        '/settings': (context) => const SettingsPage(),
+        '/week': (context) => const WeeklyForecastPage(),
+      },
+    );
+  }
 }
-
-// SlidingUpPanel(
-//
-// ),
-// ),
-// )
